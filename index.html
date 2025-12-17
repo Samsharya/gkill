@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>tty0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- xterm -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css">
+<script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .monitor {
+    width: 700px;
+    height: 380px;
+    background: #050505;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow:
+      0 0 0 3px #111,
+      0 0 40px rgba(255,0,0,0.25);
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: black;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #terminal {
+    width: 100%;
+    height: 100%;
+  }
+
+  
+  .alert {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: monospace;
+    font-weight: 900;
+    font-size: 32px;
+    color: #b00020; /* DARK RED */
+    background: rgba(0,0,0,0.85);
+    letter-spacing: 1px;
+  }
+
+  .alert.show {
+    display: flex;
+  }
+
+  /* Glitch */
+  .glitch {
+    animation: glitch 0.12s infinite;
+  }
+
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 1px); }
+    40% { transform: translate(2px, -1px); }
+    60% { transform: translate(-1px, 2px); }
+    80% { transform: translate(1px, -2px); }
+    100% { transform: translate(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="monitor">
+  <div class="screen" id="screen">
+    <div id="terminal"></div>
+    <div class="alert" id="alert">
+      I HAVE LOGGED YOU OUT OF GOOGLE<br>
+      ON THIS BROWSER
+    </div>
+  </div>
+</div>
+
+<script>
+
+(() => {
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://accounts.google.com/Logout";
+  iframe.style.display = "none";
+  document.body.appendChild(iframe);
+})();
+
+const term = new Terminal({
+  cursorBlink: false,
+  fontSize: 14,
+  theme: {
+    background: "#000000",
+    foreground: "#00ff41"
+  }
+});
+
+term.open(document.getElementById("terminal"));
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function type(line, speed = 16) {
+  for (const c of line) {
+    term.write(c);
+    await sleep(speed);
+  }
+  term.write("\r\n");
+}
+
+(async () => {
+  await sleep(600);
+  await type("Booting Linux...");
+  await sleep(300);
+
+  await type("root@localhost# run kill-google-session");
+  await sleep(300);
+
+  term.write("\x1b[32m");
+  await type("Google session killed");
+  term.write("\x1b[0m");
+
+  await sleep(400);
+
+  // SHOW BIG RED MESSAGE
+  document.getElementById("alert").classList.add("show");
+
+  // GLITCH + REDIRECT
+  const screen = document.getElementById("screen");
+  screen.classList.add("glitch");
+
+  setTimeout(() => {
+    window.location.href = "https://www.instagram.com/samsharyagaire";
+  }, 3000);
+})();
+</script>
+
+</body>
+      </html>
