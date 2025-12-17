@@ -87,8 +87,8 @@
   <div class="screen" id="screen">
     <div id="terminal"></div>
     <div class="alert" id="alert">
-      I HAVE LOGGED YOU OUT OF GOOGLE<br>
-      ON THIS BROWSER
+    --  I HAVE LOGGED YOU OUT OF <br>
+      GOOGLE ON THIS BROWSER --
     </div>
   </div>
 </div>
@@ -125,22 +125,20 @@ async function type(line, speed = 16) {
 
 (async () => {
   await sleep(600);
-  await type("Booting Linux...");
+  await type(" $  Booting Linux...");
   await sleep(300);
 
-  await type("root@localhost# run kill-google-session");
+  await type(" $  root@localhost# run kill-google-session");
   await sleep(300);
 
   term.write("\x1b[32m");
-  await type("Google session killed");
+  await type(" $  Google session killed");
   term.write("\x1b[0m");
 
   await sleep(400);
 
-  // SHOW BIG RED MESSAGE
+  
   document.getElementById("alert").classList.add("show");
-
-  // GLITCH + REDIRECT
   const screen = document.getElementById("screen");
   screen.classList.add("glitch");
 
